@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas{
+            display: block;
+        }
+        body {
+            margin: 0;
+            overscroll-behavior: none;
+        }
+        #btns{
+            position: absolute;
+            top:10%;
+            width: 500px;
+            height: 100px;
+            left: 50%;
+            transform:translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+<div id="btns"></div>
+
+<!-- Import maps polyfill -->
+<!-- Remove this when import maps will be widely supported -->
+<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+			{
+				"imports": {
+					"three": "./three.js-master/build/three.module.js"
+				}
+			}
+		</script>
+<script type="module">
+    import * as THREE from './three.js-master/build/three.module.js';
+    import {OrbitControls} from "./three.js-master/examples/jsm/controls/OrbitControls.js";
+    import {GLTFLoader} from "./three.js-master/examples/jsm/loaders/GLTFLoader.js";
+
+    let scene,renderer,camera,orbitControls;
+
+    let loader;
+
+    function init(){
+        scene = new THREE.Scene();
+        renderer = new THREE.WebGLRenderer({
+            antialias:true
+        });
+        renderer.setSize(window.innerWidth,window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,50000);
+        camera.position.set(10,10,10);
+        orbitControls = new OrbitControls(camera,renderer.domElement);
+
+        //let helper = new THREE.AxesHelper(5);//xyz轴
+        //scene.add(helper);//xyz轴
+
+        let light = new THREE.PointLight();
+		//light.intensity = 5;
+        camera.add(light);
+        scene.add(camera);
+
+        scene.background = new THREE.Color("#878787");
+
+        
+        var ambientLight = new THREE.AmbientLight(0x0c0c0c) // 创建环境光
+		var color = new THREE.Color("#FFA500") //创建颜色对象color
+		ambientLight.color = color // 给环境光修改颜色
+		ambientLight.intensity = 3
+        scene.add(ambientLight) // 将环境光添加到场景
+        
+        //this.ambientLight.visible = true //显示环境光
+        //this.ambientLight.visible = false //不显示环境光
+        //this.ambientLight.visible = this.ambientLightVisible //示例中动态修改是否显示环境光
+        
+
+        loader = new GLTFLoader();
+    }
+
+    function addMesh(){
+        loader.load("./Models/LushCave.glb",(glb)=>{
+            console.log(glb);
+            let model = glb.scene;
+            model.scale.setScalar(1.0);
+            //model.position.y += 3;
+            scene.add(model);
+        })
+    }
+
+
+    function render(){
+        renderer.render(scene,camera);
+        requestAnimationFrame(render);
+    }
+
+    init();
+    addMesh();
+    render();
+</script>
+</body>
+</html>
+	
