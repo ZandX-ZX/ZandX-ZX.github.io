@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panorama id="node1" hideabout="1" apprev="17213" appversion="6.0">
+  <input leveltilesize="510" levelbias="0.400" overlap="1" leveltileurl="tiles/node1/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingpitch="0" levelingroll="0" width="1792" height="1792" levelbiashidpi="1.000">
+    <level preload="0" predecode="0" width="1792" height="1792"/>
+    <level preload="0" predecode="0" width="896" height="896"/>
+    <level preload="1" predecode="1" width="448" height="448"/>
+    <preview color="0x808080" strip="1"/>
+  </input>
+  <view fovmode="0" pannorth="0">
+    <start tilt="0" projection="4" pan="0" fov="70"/>
+    <flyin tilt="-90" projection="9" pan="0" fov="170"/>
+    <min tilt="-90" pan="0" fovpixel="2"/>
+    <max scaletofit="1" tilt="90" fovstereographic="270" pan="360" fov="120" fovfisheye="360"/>
+  </view>
+  <userdata tags="" longitude="" description="" author="" title="" datetime="" source="" copyright="" info="" comment="" latitude="" customnodeid=""/>
+  <hotspots width="180" wordwrap="1" height="20">
+    <label borderradius="1" textalpha="1" bordercolor="0x000000" width="180" textcolor="0x000000" backgroundalpha="1" wordwrap="1" enabled="1" borderalpha="1" height="20" background="1" backgroundcolor="0xffffff" border="1"/>
+    <polystyle mode="0" bordercolor="0x0000ff" backgroundalpha="0.2509803921568627" handcursor="1" borderalpha="1" backgroundcolor="0x0000ff"/>
+  </hotspots>
+  <media/>
+  <transition type="crossdissolve" softedge="0" zoomfov="20" zoomout="0" blendcolor="0x000000" zoomspeed="2" enabled="1" zoomoutpause="1" zoomin="0" blendtime="1"/>
+  <autorotate returntohorizon="0.000" startloaded="1" nodedelay="0.00" useanimation="0" speed="0.100" delay="0.00" noderandom="1" enabled="1"/>
+  <animation syncanimationwithvideo="0" useinautorotation="0" animsequence="Animation01"/>
+  <control lockedwheel="0" speedwheel="1" dblclickfullscreen="0" rubberband="0" simulatemass="1" sensitivity="8" lockedkeyboardzoom="0" invertwheel="0" hideabout="1" lockedmouse="0" contextfullscreen="1" lockedkeyboard="1" invertcontrol="1" contextprojections="0"/>
+</panorama>

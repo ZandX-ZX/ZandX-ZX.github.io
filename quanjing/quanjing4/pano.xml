@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panorama hideabout="1" id="node1" apprev="17213" appversion="6.0">
+  <input width="1792" levelingpitch="0" overlap="1" levelbiashidpi="1.000" height="1792" leveltileurl="tiles/node1/cf_%c/l_%l/c_%x/tile_%y.jpg" levelingroll="0" levelbias="0.400" leveltilesize="510">
+    <level width="1792" preload="0" predecode="0" height="1792"/>
+    <level width="896" preload="0" predecode="0" height="896"/>
+    <level width="448" preload="1" predecode="1" height="448"/>
+    <preview color="0x808080" strip="1"/>
+  </input>
+  <view fovmode="0" pannorth="0">
+    <start projection="4" tilt="0" pan="0" fov="70"/>
+    <flyin projection="9" tilt="-90" pan="0" fov="170"/>
+    <min tilt="-90" fovpixel="2" pan="0"/>
+    <max tilt="90" fovfisheye="360" pan="360" fovstereographic="270" scaletofit="1" fov="120"/>
+  </view>
+  <userdata description="" author="" copyright="" datetime="" info="" comment="" longitude="" customnodeid="" title="" source="" tags="" latitude=""/>
+  <hotspots width="180" wordwrap="1" height="20">
+    <label width="180" backgroundcolor="0xffffff" backgroundalpha="1" borderradius="1" wordwrap="1" border="1" enabled="1" height="20" textcolor="0x000000" bordercolor="0x000000" textalpha="1" background="1" borderalpha="1"/>
+    <polystyle backgroundcolor="0x0000ff" backgroundalpha="0.2509803921568627" mode="0" handcursor="1" bordercolor="0x0000ff" borderalpha="1"/>
+  </hotspots>
+  <media/>
+  <transition type="crossdissolve" zoomoutpause="1" zoomspeed="2" zoomfov="20" enabled="1" zoomout="0" softedge="0" zoomin="0" blendtime="1" blendcolor="0x000000"/>
+  <autorotate startloaded="1" useanimation="0" nodedelay="0.00" enabled="1" returntohorizon="0.000" noderandom="1" delay="0.00" speed="0.100"/>
+  <animation useinautorotation="0" animsequence="Animation01" syncanimationwithvideo="0"/>
+  <control lockedkeyboard="1" sensitivity="8" contextprojections="0" hideabout="1" simulatemass="1" rubberband="0" dblclickfullscreen="0" contextfullscreen="1" lockedkeyboardzoom="0" lockedwheel="0" invertwheel="0" invertcontrol="1" lockedmouse="0" speedwheel="1"/>
+</panorama>

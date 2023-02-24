@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<title>ZX计算器</title>
+<style type="text/css">
+</style>
+<head>
+<audio autoplay="autoplay" controls="controls"loop="loop" preload="auto" src="sounds/music.mp3">
+</audio>
+<h1 style="color:Blue">ZX计算器</h1>
+<meta charset="UTF-8">
+<body bgcolor="Gold">
+	<script type="text/javascript">
+		window.onload = function(){
+			//屏蔽键盘事件
+			document.onkeydown = function (){
+				var e = window.event || arguments[0];
+				//F12
+				if(e.keyCode == 123){
+                    alert("Error");	
+					return false;
+				//Ctrl+Shift+I
+				}else if((e.ctrlKey) && (e.shiftKey) && (e.keyCode == 73)){
+                    alert("Error");	
+					return false;				
+				//Shift+F10
+				}else if((e.shiftKey) && (e.keyCode == 121)){
+                    alert("Error");	
+					return false;				
+				//Ctrl+U
+				}else if((e.ctrlKey) && (e.keyCode == 85)){
+                    alert("Error");	
+					return false;				
+				}
+			};
+			//屏蔽鼠标右键
+			document.oncontextmenu = function (){
+                    alert("Error");	
+				return false;				
+			}
+		}
+	</script>
+<script>
+function jia()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=a+b
+};
+function jian()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=a-b
+};
+function cheng()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=a*b
+};
+function chu()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=a/b
+};
+function chengfang()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=Math.pow(a,b);
+};
+function kaifang()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=Math.pow(a,(1/b));
+};
+function qing()
+{
+var a = parseFloat(document.getElementById("numberOne").value);
+var b = parseFloat(document.getElementById("numberTwo").value);
+document.getElementById("field3").value=a/b
+};
+function qing()
+{
+document.getElementById("numberOne").value=" ";
+document.getElementById("numberTwo").value=" ";
+document.getElementById("field3").value=" "
+};
+</script>
+</head>
+<body>
+
+数一/底数/被开方数: <input type="number" id="numberOne" style="background-color:Yellow" min="0.0" step="0.01"><br>
+数二/指数: &#8195;&#8195;&#8195;&#8195;&#8194;<input type="number" id="numberTwo" style="background-color:Yellow" min="0.0" step="0.01"><br>
+结果: &#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8194;&#8194;<input type="number" id="field3" style="background-color:Yellow" min="0.0" step="0.01"><br><br>
+
+
+<button style="background-color:Red" onclick="jia()">+</button>
+<button style="background-color:Yellow" onclick="jian()">-</button>
+<button style="background-color:Orange" onclick="cheng()">*</button>
+<button style="background-color:LightGreen" onclick="chu()">/</button>
+<button style="background-color:LawnGreen" onclick="chengfang()">乘方</button>
+<button style="background-color:Gold" onclick="kaifang()">开方</button>
+<button style="background-color:White" onclick="qing()">清空</button>
+<p style="background-color:Grey">欢迎使用ZX计算器！</p>
+<p style="background-color:Red">玩的开心！</p>
+<p style="background-color:Yellow">用法：<br>在数一数二里输入数字（可以为负数小数不能分数），<br>然后根据运算分类选择符号按下对应按钮，<br>结果就出来啦！<br>是不是很好用呢？</p>
+<a href="index.html">返回主页</a>
+</body>
+</html>
+BY【ZX】
