@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>音乐播放器</title>
+<style>
+#MusicBtn {
+	background-color:LightBlue;
+}
+#Music {
+	width: 500px;
+	height: 550px;
+	border-radius: 10px;
+	margin: 20px auto;
+	position: relative;
+	text-align: center;
+	background-color:LightYellow;
+	display: block;
+}
+#container {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 500px;
+	height: 500px;
+	text-align: center;
+	background:rgba(255,255,255,0.6);
+}
+#playBtn {
+	width: 500px;
+	height: 500px;
+	border-radius: 10px;
+	margin: 20px auto;
+	position: relative;
+	text-align: center;
+}
+#musicImg{
+	width: 300px;
+	height: 300px;
+	text-align: center;
+	margin: auto;
+	border-radius:40%;
+}
+</style>
+</head>
+<body>
+
+<div id="Music">
+	<div id="container">
+		<h3 id="musicName">ZX音乐播放器</h3>
+		<h4 id="MusicText">当前播放：寂静之声</h4>
+		<img src="shiyong_index.files/image001.gif" id="musicImg">
+		<audio src="./Music/寂静之声.mp3" controls id="audio">您的浏览器过旧:)</audio>
+		<div class="btn" id="playBtn">
+			<button id="play">开始</button>
+			<button id="pause">暂停</button>
+			<button id="prev">上一首</button>
+			<button id="next">下一首</button>
+		</div>
+	</div>
+</div>
+
+<script>
+/*
+//------
+document.getElementById("MusicBtn").onclick = function(){
+	if(document.getElementById("Music").style.display == 'block'){
+		document.getElementById("Music").style.display = 'none';
+	}
+	else{
+		document.getElementById("Music").style.display = 'block';
+	}
+	}
+//------
+*/
+var num=1;
+var len=16
+var MusicList = {1:"寂静之声",2:"森林狂想曲",3:"故乡原风景",4:"寂静之声2",5:"Cornfield Chase",6:"Zen Garden",7:"Brainiac Maniac",8:"His Theme",9:"World We Uesd To Know-Alan Walker",10:"Blue-Alan Walker",11:"Cube Land",12:"Ivor Theme",13:"Order Of The Stone",14:"Wither Storm Theme",15:"Intro The End Linear II",16:"No More Creepers"}
+// 播放
+document.getElementById("play").onclick = function(){
+	if(document.getElementById("audio").paused == true){
+		document.getElementById("audio").play();
+	}
+	}
+// 暂停
+document.getElementById("pause").onclick = function(){
+	if(document.getElementById("audio").played){
+		document.getElementById("audio").pause();
+	}
+	}
+var bgImage = document.getElementById("musicImg");
+document.getElementById("prev").onclick = function(){
+	if(num>1){
+		num = num - 1;
+		}
+	else{
+		num=len;
+		}
+	
+	document.getElementById("audio").src = './Music/' + MusicList[num] + '.mp3';
+	document.getElementById("MusicText").innerHTML = "当前播放：" + MusicList[num];
+	//bgImage.style.backgroundImage = 'url(./image/' + num + '.jpg)';
+	//musicImg.src = './image/' + num + '.jpg';
+	document.getElementById("audio").play();
+	}
+// 下一首
+document.getElementById("next").onclick = function(){
+	if(num<len){
+		num = num + 1;
+		}
+	else{
+		num=1;
+		}
+	document.getElementById("audio").src = './Music/' + MusicList[num] + '.mp3';
+	document.getElementById("MusicText").innerHTML = "当前播放：" + MusicList[num];
+	//bgImage.style.backgroundImage = 'url(./image/' + num + '.jpg)';
+	//musicImg.src = './image/' + num+ '.jpg';
+	document.getElementById("audio").play();
+document.getElementById("audio").addEventListener('ended',function(){
+	document.getElementById("next").onclick();
+},false);
+}
+// 上一首
+</script>
+</body>
+</html>
