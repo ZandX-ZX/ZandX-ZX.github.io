@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>ZX</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				background-color: #bfe3dd;
+				color: #000;
+			}
+
+			a {
+				color: #2983ff;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="container"></div>
+
+		<div id="info">
+            <a href="./index.html" target="_blank" rel="ZX">ZX</a>
+		</div>
+
+		<!-- Import maps polyfill -->
+		<!-- Remove this when import maps will be widely supported -->
+		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "./Models/three.js-master/build/three.module.js",
+					"three/addons/": "./Models/three.js-master/examples/jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+    //----------
+    var animationNum = 0
+    var presentNum = 0
+    //----------
+			import * as THREE from 'three';
+
+			import Stats from 'three/addons/libs/stats.module.js';
+
+			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+			import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+			import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+			let mixer;
+
+			const clock = new THREE.Clock();
+			const container = document.getElementById( 'container' );
+
+			const stats = new Stats();
+			container.appendChild( stats.dom );
+
+			const renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.outputEncoding = THREE.sRGBEncoding;
+			container.appendChild( renderer.domElement );
+
+			const pmremGenerator = new THREE.PMREMGenerator( renderer );
+
+			const scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xbfe3dd );
+			scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture;
+
+			const camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 100 );
+			camera.position.set( 5, 2, 8 );
+
+			const controls = new OrbitControls( camera, renderer.domElement );
+			controls.target.set( 0, 0.5, 0 );
+			controls.update();
+			controls.enablePan = false;
+			controls.enableDamping = true;
+
+			const dracoLoader = new DRACOLoader();
+			dracoLoader.setDecoderPath( 'js/libs/draco/gltf/' );
+
+			const loader = new GLTFLoader();
+			loader.setDRACOLoader( dracoLoader );
+			loader.load( './WF.gltf', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( 1, 1, 0 );
+				model.scale.set( 1, 1, 1 );
+				scene.add( model );
+
+				mixer = new THREE.AnimationMixer( model );
+                var animationList = [0,2,3,6,7,8,9,10,11,12,13,14,15]
+                var random = animationList[Math.floor(Math.random()*animationList.length)];
+				mixer.clipAction( gltf.animations[ random ] ).play();
+
+                animationNum = model.animations.length
+
+				animate();
+
+			}, undefined, function ( e ) {
+
+				console.error( e );
+
+			} );
+
+
+			window.onresize = function () {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			};
+/*
+            document.getElementById("prev").onclick = function(){
+            if(presentNum>0){
+                presentNum = presentNum - 1;
+                }
+            else{
+                presentNum=animationNum;
+                }
+            mixer.clipAction( window.model.animations[ presentNum ] ).play();
+            document.getElementById("AniNum").innerHTML = "当前播放：动画" + presentNum;
+            }
+document.getElementById("next").onclick = function(){
+	        if(presentNum<animationNum){
+		        presentNum = presentNum + 1;
+		        }
+	        else{
+		        presentNum=1;
+		        }
+            mixer.clipAction( window.model.animations[ presentNum ] ).play();
+            document.getElementById("AniNum").innerHTML = "当前播放：动画" + presentNum;
+}
+*/
+
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				const delta = clock.getDelta();
+
+				mixer.update( delta );
+
+				controls.update();
+
+				stats.update();
+
+				renderer.render( scene, camera );
+
+			}
+
+
+		</script>
+
+	</body>
+
+</html>
