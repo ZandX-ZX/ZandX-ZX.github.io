@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生日快乐</title>
+  <style>
+    /* 100% 还原 UI 样式 */
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 170, 220, 0.18), transparent 25%),
+        radial-gradient(circle at 80% 30%, rgba(255, 120, 200, 0.12), transparent 25%),
+        radial-gradient(circle at 50% 80%, rgba(255, 200, 235, 0.18), transparent 30%),
+        linear-gradient(135deg, #120014 0%, #1f0626 35%, #320b3f 65%, #140015 100%);
+    }
+
+    canvas { position: fixed; inset: 0; display: block; opacity: 0; transition: opacity 1s ease; z-index: 1; }
+    canvas.show { opacity: 1; }
+
+    .overlay {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at center, rgba(255, 170, 220, 0.10), rgba(0, 0, 0, 0.72)), rgba(10, 0, 15, 0.6);
+      backdrop-filter: blur(10px); z-index: 20; transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .dialog {
+      width: min(90vw, 420px); padding: 28px 24px 24px; border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255, 180, 220, 0.28);
+      box-shadow: 0 0 30px rgba(255, 100, 190, 0.18), inset 0 1px 0 rgba(255,255,255,0.15);
+      backdrop-filter: blur(18px); text-align: center; animation: dialogIn 0.7s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes dialogIn { from { transform: translateY(20px) scale(0.94); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+    .dialog h2 { color: #ffd6ef; font-size: 24px; font-weight: 700; margin-bottom: 18px; text-shadow: 0 0 12px rgba(255, 120, 210, 0.45); }
+    .dialog input {
+      width: 100%; padding: 15px 18px; border-radius: 16px; border: 1px solid rgba(255, 180, 220, 0.28);
+      outline: none; background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; transition: 0.25s;
+    }
+    .dialog button {
+      width: 100%; margin-top: 8px; padding: 14px 18px; border: none; border-radius: 16px; cursor: pointer;
+      color: white; font-size: 16px; font-weight: 700;
+      background: linear-gradient(90deg, #ff72c7, #ff9ae6, #ff63b8); background-size: 200% 100%;
+      box-shadow: 0 10px 28px rgba(255, 90, 190, 0.30); animation: btnFlow 3s linear infinite;
+    }
+    @keyframes btnFlow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+    .title {
+      position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      z-index: 2; pointer-events: none; text-align: center; opacity: 0; transition: opacity 1.3s ease;
+    }
+    .title.show { opacity: 1; }
+    .title h1 {
+      font-size: clamp(34px, 6vw, 82px); font-weight: 800; letter-spacing: 4px;
+      background: linear-gradient(90deg, #ffd1ec 0%, #ff8dd8 35%, #ffc4f0 70%, #ff7fc9 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow { from { filter: drop-shadow(0 0 12px rgba(255, 120, 210, 0.35)); } to { filter: drop-shadow(0 0 24px rgba(255, 150, 220, 0.58)); } }
+    .error { min-height: 24px; margin-top: 12px; color: #ff8fc9; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="title" id="title">
+    <h1>LOVE FLOW</h1>
+    <p style="color: rgba(255,220,240,0.6); letter-spacing: 3px;">Romantic Dream - Happy Birthday!</p>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="dialog">
+      <h2>Enter the pass here:</h2>
+      <div class="input-wrap">
+        <input id="passInput" type="password" placeholder="Please enter your passport..." />
+      </div>
+      <button id="enterBtn">ENTER</button>
+      <div class="error" id="errorText"></div>
+    </div>
+  </div>
+
+  <script>
+    const PASS = "1314520sr";
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let w, h, animationStarted = false, frame = 0;
+    let heartParticles = [];
+    let waterfallParticles = [];
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function gradientColor(t, alpha = 1) {
+      const colors = [[255, 118, 196], [255, 159, 227], [255, 207, 238], [255, 104, 184]];
+      const n = colors.length - 1;
+      const i = Math.floor(t * n);
+      const localT = (t * n) - i;
+      const c1 = colors[i], c2 = colors[Math.min(i + 1, n)];
+      return `rgba(${Math.round(lerp(c1[0], c2[0], localT))},${Math.round(lerp(c1[1], c2[1], localT))},${Math.round(lerp(c1[2], c2[2], localT))},${alpha})`;
+    }
+
+    class Heart3D {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        // 采样逻辑优化：彻底解决轴向竖杠
+        let t = Math.random() * Math.PI * 2;
+        let p = Math.random() * Math.PI * 2;
+        // 使用立方根分布，使体积更均匀，并强制避开极小半径
+        let r = 0.3 + 0.7 * Math.pow(Math.random(), 1/3); 
+        
+        let x = r * 16 * Math.pow(Math.sin(t), 3) * Math.cos(p);
+        let y = r * -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        let z = r * 16 * Math.pow(Math.sin(t), 3) * Math.sin(p);
+
+        // 【关键逻辑】径向推力：如果粒子离中心竖轴太近，强行推开它
+        let distToAxis = Math.sqrt(x*x + z*z);
+        if(distToAxis < 0.6) {
+          let push = (0.6 - distToAxis) + Math.random() * 2;
+          x += Math.cos(p) * push;
+          z += Math.sin(p) * push;
+        }
+
+        this.x3d = x; this.y3d = y; this.z3d = z;
+        this.size = Math.random() * 2 + 1;
+        this.offset = Math.random() * 100;
+      }
+      draw(angle) {
+        const cos = Math.cos(angle), sin = Math.sin(angle);
+        const rx = this.x3d * cos - this.z3d * sin;
+        const rz = this.x3d * sin + this.z3d * cos;
+        const ry = this.y3d;
+
+        const scale = Math.min(w, h) * 0.032; // 进一步放大爱心
+        const perspective = 600 / (600 + rz * scale);
+        const screenX = rx * scale * perspective + w / 2;
+        const screenY = ry * scale * perspective + h / 2 - 40;
+
+        ctx.fillStyle = gradientColor((frame * 0.002 + this.offset * 0.01) % 1, 0.8 * perspective);
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, this.size * perspective, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Waterfall {
+      constructor(isInitial = false) {
+        this.init(isInitial);
+      }
+      init(isInitial = false) {
+        // 分布半径变大：从 30 增加到 120
+        this.x = w / 2 + (Math.random() - 0.5) * 500;
+        const startY = h / 2 + Math.min(w, h) * 0.12; 
+        const groundY = h - 30;
+        
+        if (isInitial) {
+          this.y = startY + Math.random() * (groundY - startY);
+          this.life = Math.random();
+        } else {
+          this.y = startY;
+          this.life = 1.0;
+        }
+
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.vy = Math.random() * 1 + 0.5; // 初始下落速度调慢
+        this.gravity = 0.05; // 重力大幅调小，实现慢动作
+        this.isGrounded = false;
+        this.groundY = groundY;
+        this.decay = 0.005 + Math.random() * 0.003; // 生命周期变长
+      }
+      update() {
+        if (!this.isGrounded) {
+          this.vy += this.gravity;
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.y >= this.groundY) {
+            this.isGrounded = true;
+            this.vy = -Math.random() * 1; 
+            this.vx *= (Math.random() > 0.5 ? 3 : -3); 
+          }
+        } else {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += this.gravity;
+          if(this.y > this.groundY + 10) this.y = this.groundY + 10;
+          this.vx *= 0.96; 
+        }
+        this.life -= this.decay; 
+        if (this.life <= 0) this.init(false);
+      }
+      draw() {
+        ctx.fillStyle = gradientColor((frame * 0.003) % 1, this.life * 0.8);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.isGrounded ? 1.2 : 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function init() {
+      heartParticles = [];
+      waterfallParticles = [];
+      for (let i = 0; i < 2600; i++) heartParticles.push(new Heart3D());
+      for (let i = 0; i < 220; i++) waterfallParticles.push(new Waterfall(true));
+    }
+
+    function animate() {
+      if (!animationStarted) return;
+      frame++;
+      ctx.clearRect(0, 0, w, h);
+      
+      const angle = frame * 0.012; // 旋转也稍微调慢，增加优雅感
+      heartParticles.forEach(p => p.draw(angle));
+      waterfallParticles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    const overlay = document.getElementById("overlay");
+    const passInput = document.getElementById("passInput");
+    const enterBtn = document.getElementById("enterBtn");
+    const errorText = document.getElementById("errorText");
+    const title = document.getElementById("title");
+
+    function unlock() {
+      if (passInput.value.trim() === PASS) {
+        overlay.classList.add("hide");
+        canvas.classList.add("show");
+        title.classList.add("show");
+        animationStarted = true;
+        init();
+        animate();
+      } else {
+        errorText.textContent = "Passport error!!!";
+        passInput.value = "";
+        document.querySelector(".dialog").animate([
+          { transform: "translateX(-8px)" }, { transform: "translateX(8px)" }, { transform: "translateX(0)" }
+        ], { duration: 300 });
+      }
+    }
+
+    enterBtn.addEventListener("click", unlock);
+    passInput.addEventListener("keydown", (e) => e.key === "Enter" && unlock());
+    passInput.focus();
+  </script>
+</body>
+</html>
